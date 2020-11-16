@@ -4,7 +4,7 @@ Manage tasks with ease in Neovim with the power and speed (compared to VimL) of 
 ![Screenshot](img/main.png)
 
 # Installation
-Using Vim/Neovim's builtin package system.
+Using Neovim's builtin package system.
 ```sh
 git clone https://github.com/shoumodip/nvim-tasks ~/.config/nvim/pack/plugins/start/nvim-tasks
 ```
