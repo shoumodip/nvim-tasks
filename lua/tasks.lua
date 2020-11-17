@@ -9,6 +9,7 @@
 -- Variables -{{{
 local api = vim.api
 local timeformat = ' <%Y-%m-%d %a %b>'
+local deadline_warntime = api.nvim_get_var('tasks_warntime')
 -- }}}
 -- Remove the timestamp (if any) -{{{
 local function RemoveTime()
@@ -118,20 +119,20 @@ end
 local function Init()
 
   -- Colors
-  api.nvim_command('highlight! Comment gui=strikethrough')
+  api.nvim_command('highlight! Comment gui=strikethrough'       )
 
-  api.nvim_call_function('matchadd', {'Identifier', '\\%1v'                 })
+  api.nvim_command('syntax match Identifier "\\v^\\["'          )
+  api.nvim_command('syntax match Function "✕"'                  )
+  api.nvim_command('syntax match Type "-"'                      )
+  api.nvim_command('syntax match Constant "\\v\\]\\s.*"'        )
+  api.nvim_command('syntax match Identifier "\\c\\]"'           )
+  api.nvim_command('syntax match Identifier "\\v\\<.*\\>"'      )
+  api.nvim_command('syntax match Comment "\\v\\[X\\].*"'        )
+  api.nvim_command('syntax match String "\\v\\<Completed:.*\\>"')
+  api.nvim_command('syntax match Type "\\v\\<Deadline:.*\\>"'   )
 
-  api.nvim_call_function('matchadd', {'Function',   '✕'                     })
-  api.nvim_call_function('matchadd', {'Type',       '-'                     })
-
-  api.nvim_call_function('matchadd', {'Constant',   '\\v\\]\\s.*'           })
-  api.nvim_call_function('matchadd', {'Identifier', '\\%3v'                 })
-
-  api.nvim_call_function('matchadd', {'Identifier', '\\v\\<.*\\>'           })
-  api.nvim_call_function('matchadd', {'String',     '\\v\\<Completed:.*\\>' })
-  api.nvim_call_function('matchadd', {'Type',       '\\v\\<Deadline:.*\\>'  })
-  api.nvim_call_function('matchadd', {'Comment',    '\\v\\[X\\].*'          })
+  api.nvim_command('highlight! link DeadlineOver Comment')
+  api.nvim_command('highlight! link DeadlineNear WarningMsg')
 
   -- Autocommands
   api.nvim_command('autocmd InsertLeave ' .. api.nvim_buf_get_name(0) .. ' silent! write | lua require"tasks".RefDeadlines()')
@@ -166,9 +167,9 @@ local function CheckDeadline()
     -- If the deadline is over or near highlight it as a warning
     if daysleft < 1 then
       -- The deadline is over
-      api.nvim_call_function('matchadd', {'Comment', '<Deadline: ' .. deadline .. '.*$'})
-    elseif daysleft < 3 then
-      api.nvim_call_function('matchadd', {'WarningMsg', '<Deadline: ' .. deadline .. '.*$'})
+      api.nvim_call_function('matchadd', {'DeadlineOver', '<Deadline: ' .. deadline .. '.*$'})
+    elseif daysleft <= deadline_warntime then
+      api.nvim_call_function('matchadd', {'DeadlineNear', '<Deadline: ' .. deadline .. '.*$'})
     end
 
   end
@@ -177,6 +178,7 @@ end
 -- Check the deadlines in the files -{{{
 local function RefDeadlines()
   local initpos = api.nvim_win_get_cursor(0) -- The initial cursor position
+  api.nvim_call_function('clearmatches', {}) -- Clear the matches
   api.nvim_win_set_cursor(0, {1, 0}) -- Top of the file
 
   -- Check all the deadlines in the file

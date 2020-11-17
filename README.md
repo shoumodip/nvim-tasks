@@ -65,5 +65,12 @@ Deadlines which are over are highlighted as a comment, because they don't matter
 `cc` Edit the entire task as well as the deadline (if any).\
 `C` Edit only the task and not the deadline (if any).
 
+## Deadline Warntime
+By default, deadlines will be highlighted as a Warning if it is less than 4 days away, however this can be changed. Place this **before** you source the plugin in your `init.vim` or whatever.
+```vim
+let g:tasks_warntime = 4
+```
+And this will highlight the deadlines which are less than or equal to `4` days away as warnings
+
 # License
 MIT
