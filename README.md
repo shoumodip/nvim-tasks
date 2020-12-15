@@ -51,7 +51,7 @@ Cancelled tasks are highlighted as a comment, 'strike-throughed' and are marked 
 ![Deadlines](img/deadline.png)
 
 ## Near Deadlines
-Deadlines which are less than 3 days away, are highlighted as a warning. This is **really** useful as it can be seen at a glance the deadlines approaching and the urgent tasks without inspecting the dates.
+Deadlines which are less than or equal to `g:tasks_warntime` (3 by default) days away, are highlighted as a warning. This is **really** useful as it can be seen at a glance the deadlines approaching and the urgent tasks without inspecting the dates.
 
 ![Near Deadlines](img/deadline_near.png)
 
@@ -66,11 +66,11 @@ Deadlines which are over are highlighted as a comment, because they don't matter
 `C` Edit only the task and not the deadline (if any).
 
 ## Deadline Warntime
-By default, deadlines will be highlighted as a Warning if it is less than 4 days away, however this can be changed. Place this **before** you source the plugin in your `init.vim` or whatever.
+By default, deadlines will be highlighted as a Warning if it is less than or equal to 3 days away, however this can be changed. Place this **before** you source the plugin in your `init.vim` or whatever.
 ```vim
 let g:tasks_warntime = 4
 ```
-And this will highlight the deadlines which are less than or equal to `4` days away as warnings
+And this will highlight the deadlines which are less than or equal to `4` days away as warnings.
 
 # License
 MIT
