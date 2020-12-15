@@ -119,17 +119,17 @@ end
 local function Init()
 
   -- Colors
-  api.nvim_command('highlight! Comment gui=strikethrough'       )
+  api.nvim_command('highlight! Comment gui=strikethrough' )
 
-  api.nvim_command('syntax match Identifier "\\v^\\["'          )
-  api.nvim_command('syntax match Function "✕"'                  )
-  api.nvim_command('syntax match Type "-"'                      )
-  api.nvim_command('syntax match Constant "\\v\\]\\s.*"'        )
-  api.nvim_command('syntax match Identifier "\\c\\]"'           )
-  api.nvim_command('syntax match Identifier "\\v\\<.*\\>"'      )
-  api.nvim_command('syntax match Comment "\\v\\[X\\].*"'        )
-  api.nvim_command('syntax match String "\\v\\<Completed:.*\\>"')
-  api.nvim_command('syntax match Type "\\v\\<Deadline:.*\\>"'   )
+  api.nvim_command('syntax match Constant   "\\%4v.*"'        )
+  api.nvim_command('syntax match Identifier "<.*>"'           )
+  api.nvim_command('syntax match String     "\\%2c✕"'         )
+  api.nvim_command('syntax match Label      "\\%2c-"'         )
+  api.nvim_command('syntax match Identifier "\\%1v\\["'       )
+  api.nvim_command('syntax match Identifier "\\%3v\\]"'       )
+  api.nvim_command('syntax match Comment    "\\[X\\].*"'      )
+  api.nvim_call_function('matchadd', {'String', '<Completed: .*>'})
+  api.nvim_call_function('matchadd', {'Label',  '<Deadline: .*>' })
 
   api.nvim_command('highlight! link DeadlineOver Comment')
   api.nvim_command('highlight! link DeadlineNear WarningMsg')
@@ -180,6 +180,10 @@ local function RefDeadlines()
   local initpos = api.nvim_win_get_cursor(0) -- The initial cursor position
   api.nvim_call_function('clearmatches', {}) -- Clear the matches
   api.nvim_win_set_cursor(0, {1, 0}) -- Top of the file
+
+  -- Deadlines
+  api.nvim_call_function('matchadd', {'String', '<Completed: .*>'})
+  api.nvim_call_function('matchadd', {'Label',  '<Deadline: .*>' })
 
   -- Check all the deadlines in the file
   while api.nvim_call_function('line', {'.'}) < api.nvim_call_function('line', {'$'}) do
